@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	jquery-class builder
+
+	call 'release' to build a complete production version
+	and 'devel' to an uncompressed built of jquery-class.
+
+	check the dist directory for results (as always).
+
+	jquery-class MUST respect the CommonJS Package spec (http://www.commonjs.org/specs/).
+-->
+<project name="jquery-class" default="release" basedir=".">
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="lib/ant-contrib-0.6.jar"/>
+		</classpath>
+	</taskdef>
+
+	<!-- version -->
+	<loadfile failonerror="false" encoding="utf-8" srcFile="VERSION" property="package.version">
+		<filterchain><striplinebreaks/></filterchain>
+	</loadfile>
+
+	<!-- package -->
+	<property name="package.name" value="jquery.class"/>
+	<property name="package.filename" value="${package.name}-${package.version}"/>
+
+	<!-- directories -->
+	<property name="package.dir.build" value="build"/>
+	<property name="package.dir.lib" value="lib"/>
+	<property name="package.dir.src" value="src"/>
+	<property name="package.dir.dist" value="dist"/>
+	<property name="package.dir.test" value="test"/>
+	<property name="package.dir.doc" value="doc"/>
+
+	<!-- header -->
+	<loadfile failonerror="true" encoding="utf-8" srcFile="${package.dir.build}/HEADER"
+		property="package.header"/>
+
+	<!-- output -->
+	<property name="package.output.release" value="${package.filename}.min.js"/>
+	<property name="package.output.devel" value="${package.filename}.js"/>
+
+	<!-- tools -->
+	<property name="package.tools.google-compiler" value="${package.dir.lib}/google-compiler-20110807.jar"/>
+
+	<!-- tasks -->
+
+		<!-- :release -->
+		<target name="release" description="production release" depends="clean,concat,minify,version">
+			<echo message="Building release."/>
+			<concat destfile="${package.dir.dist}/${package.output.release}">
+				<header filtering="no" trimleading="yes"><![CDATA[${package.header}]]></header>
+				<filelist dir="${package.dir.build}/${package.name}/" files="${package.output.release}"/>
+			</concat>
+			<echo message="done."/>
+		</target>
+
+		<!-- :devel -->
+		<target name="devel" description="developement release" depends="concat,version">
+			<echo message="Building devel."/>
+			<concat destfile="${package.dir.dist}/${package.output.devel}">
+				<header filtering="no" trimleading="yes"><![CDATA[${package.header}]]></header>
+				<filelist dir="${package.dir.build}/${package.name}/" files="${package.name}.js"/>
+			</concat>
+			<echo message="done."/>
+		</target>
+
+		<!-- :clean -->
+		<target name="clean" description="clean code from debug stuff.">
+			<echo message="Cleaning."/>
+			<mkdir dir="${package.dir.build}/${package.name}/"/>
+			<mkdir dir="dist"/>
+			<mkdir dir="doc"/>
+			<delete file="${package.dir.build}/${package.name}/${package.name}.js"/>
+			<delete file="${package.dir.build}/${package.name}/${package.output.release}"/>
+			<delete file="${package.dir.dist}/${package.output.release}"/>
+			<delete file="${package.dir.dist}/${package.output.devel}"/>
+			<echo message="Cleaned."/>
+		</target>
+
+		<!-- :concat -->
+		<target name="concat" description="concat files with each others.">
+			<echo message="Concatenating files."/>
+			<concat destfile="${package.dir.build}/${package.name}/${package.name}.js">
+				<fileset dir="${package.dir.src}/" includes="*.js"/>
+			</concat>
+			<echo message="Files concatenated."/>
+		</target>
+
+		<!-- :minify -->
+		<target name="minify" description="minify files with compressors." depends="clean">
+			<echo message="Compressing."/>
+			<parallel threadsperprocessor="1">
+				<apply executable="java" parallel="false">
+					<filelist dir="${package.dir.build}/${package.name}/" files="${package.name}.js"/>
+					<arg line="-jar" />
+					<arg path="${package.tools.google-compiler}" />
+					<arg value="--warning_level" />
+					<arg value="QUIET" />
+					<arg value="--js_output_file" />
+					<targetfile />
+					<arg value="--js" />
+					<mapper type="glob" from="*.js" to="${package.dir.build}/${package.name}/${package.output.release}" />
+				</apply>
+			</parallel>
+		</target>
+
+		<!-- :version -->
+		<target name="version" description="append version number to the release file.">
+			<echo message="Appending version to the current build."/>
+			<replaceregexp match="@VERSION" replace="${package.version}">
+				<fileset dir="${package.dir.build}/${package.name}/" includes="${package.name}*.js"/>
+			</replaceregexp>
+			<echo message="Version appended."/>
+		</target>
+
+</project>
