@@ -1,0 +1,15 @@
+{
+	"name": "$.Class",
+	"description": "Object Oriented Class plugin for jQuery.",
+	"author": "Guillaume Coguiec",
+	"email" : "g.coguiec@gmail.com",
+	"contributors": [{
+		"name": "Kevin Manson",
+		"email": "kevin.manson@gmail.com"
+	}],
+	"license": {
+		"name": "MIT",
+		"url": "http://www.opensource.org/licenses/mit-license.php"
+	},
+	"keywords": [ "jquery", "class", "object" ]
+}
