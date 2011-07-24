@@ -48,31 +48,37 @@
 	<!-- tasks -->
 
 		<!-- :release -->
-		<target name="release" description="production release" depends="clean,concat,minify,version">
+		<target name="release" description="production release" depends="clean,concat,minify">
 			<echo message="Building release."/>
 			<concat destfile="${package.dir.dist}/${package.output.release}">
 				<header filtering="no" trimleading="yes"><![CDATA[${package.header}]]></header>
 				<filelist dir="${package.dir.build}/${package.name}/" files="${package.output.release}"/>
 			</concat>
+			<replaceregexp match="@VERSION" replace="${package.version}">
+				<filelist dir="${package.dir.dist}/" files="${package.output.release}"/>
+			</replaceregexp>
 			<echo message="done."/>
 		</target>
 
 		<!-- :devel -->
-		<target name="devel" description="developement release" depends="concat,version">
+		<target name="devel" description="developement release" depends="clean,concat">
 			<echo message="Building devel."/>
 			<concat destfile="${package.dir.dist}/${package.output.devel}">
 				<header filtering="no" trimleading="yes"><![CDATA[${package.header}]]></header>
 				<filelist dir="${package.dir.build}/${package.name}/" files="${package.name}.js"/>
 			</concat>
+			<replaceregexp match="@VERSION" replace="${package.version}dev">
+				<filelist dir="${package.dir.dist}/" files="${package.output.devel}"/>
+			</replaceregexp>
 			<echo message="done."/>
 		</target>
 
 		<!-- :clean -->
 		<target name="clean" description="clean code from debug stuff.">
 			<echo message="Cleaning."/>
-			<mkdir dir="${package.dir.build}/${package.name}/"/>
 			<mkdir dir="dist"/>
 			<mkdir dir="doc"/>
+			<mkdir dir="${package.dir.build}/${package.name}/"/>
 			<delete file="${package.dir.build}/${package.name}/${package.name}.js"/>
 			<delete file="${package.dir.build}/${package.name}/${package.output.release}"/>
 			<delete file="${package.dir.dist}/${package.output.release}"/>
@@ -105,15 +111,6 @@
 					<mapper type="glob" from="*.js" to="${package.dir.build}/${package.name}/${package.output.release}" />
 				</apply>
 			</parallel>
-		</target>
-
-		<!-- :version -->
-		<target name="version" description="append version number to the release file.">
-			<echo message="Appending version to the current build."/>
-			<replaceregexp match="@VERSION" replace="${package.version}">
-				<fileset dir="${package.dir.build}/${package.name}/" includes="${package.name}*.js"/>
-			</replaceregexp>
-			<echo message="Version appended."/>
 		</target>
 
 </project>
