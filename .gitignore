@@ -1,0 +1,13 @@
+# .gitignore - jquery-class project
+
+# common trashes
+*~
+*.DS_Store
+*.project
+*.settings
+*.tmp
+*.swp
+
+# related to project
+build/jquery-class/*
+dist/*
