@@ -3,9 +3,9 @@
 	jquery-class builder
 
 	call 'release' to build a complete production version
-	and 'devel' to an uncompressed built of jquery-class.
+	and 'devel' to an uncompressed jquery-class build.
 
-	check the dist directory for results (as always).
+	check the dist top project directory for results.
 
 	jquery-class MUST respect the CommonJS Package spec (http://www.commonjs.org/specs/).
 -->
@@ -96,7 +96,7 @@
 		</target>
 
 		<!-- :minify -->
-		<target name="minify" description="minify files with compressors." depends="clean">
+		<target name="minify" description="minify files with compressors." depends="concat">
 			<echo message="Compressing."/>
 			<parallel threadsperprocessor="1">
 				<apply executable="java" parallel="false">
