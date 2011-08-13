@@ -28,6 +28,7 @@
         $instance.extend = function(key, value) { this.prototype[key] = value; }.overload();
         $instance.prototype.implement = function(key, value) { this[key] = value; }.overload();
         $.extend($instance, this);
+        // Extends
         if (has.call(params, "Extends")) {
             if ($.isFunction(params.Extends)) $instance.extend(params.Extends.prototype);
             else if ($.isArray(params.Extends))
@@ -35,7 +36,12 @@
         }
         delete $instance.prototype.Extends;
         $.extend($instance.prototype, params);
+        // Mutators
+        for(m in $.Class.Mutators) $.Class.Mutators[m].call($instance, has.call(params, m) ? params['m'] : ($.Class.MutatorsDefaults.indexOf(m) >= 0));
         return $instance;
     };
+
+    $.Class.Mutators = {};
+    $.Class.MutatorsDefaults = [];
 
 })(jQuery, this);
