@@ -1,7 +1,7 @@
 $.Class : Object Oriented Class plugin for jQuery
 =================================================
 
-This is a Mootools-like class implementation for jQuery in just 37 NCLOC.
+This is a Mootools-like class implementation for jQuery in just a few NCLOC.
 
 The Big Picture
 ---------------
@@ -94,6 +94,35 @@ var Egg = new $.Class({
 var egg1 = new Egg();
 var egg2 = new Egg();
 var egg3 = new Egg();
+
+```
+
+### Parent reference
+
+```javascript
+var Egg = new $.Class({
+	initialize: function(name) {
+		console.log("Egg constructor");
+		this.name = name;
+	},
+	who: function() {
+		console.log("I'm " + this.name);
+	},
+	crack: function() {},
+});
+
+var Chicken = new $.Class({
+	initialize: function(name) {
+		this.parent.initialize.call(this, name);
+		console.log("Chicken constructor")
+	},
+	Extends: Egg,
+});
+
+e = new Egg("Bob");
+e.who();
+c = new Chicken("Alfred");
+c.who();
 
 ```
 

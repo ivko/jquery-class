@@ -27,12 +27,12 @@
         delete this['$instance'];
         $instance.extend = function(key, value) { this.prototype[key] = value; }.overload();
         $instance.prototype.implement = function(key, value) { this[key] = value; }.overload();
-        $.extend($instance, this);
         // Extends
         if (has.call(params, "Extends")) {
-            if ($.isFunction(params.Extends)) $instance.extend(params.Extends.prototype);
-            else if ($.isArray(params.Extends))
-                for (e in params.Extends) $instance.extend(params.Extends[e].prototype);
+            if ($.isFunction(params.Extends)) {
+                $instance.extend(params.Extends.prototype);
+                $instance.extend('parent', params.Extends.prototype); // unique parent
+            } else if ($.isArray(params.Extends)) for(e in params.Extends) $instance.extend(params.Extends[e].prototype);
         }
         delete $instance.prototype.Extends;
         $.extend($instance.prototype, params);
