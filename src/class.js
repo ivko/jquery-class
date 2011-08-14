@@ -37,7 +37,7 @@
         delete $instance.prototype.Extends;
         $.extend($instance.prototype, params);
         // Mutators
-        for(m in $.Class.Mutators) $.Class.Mutators[m].call($instance, has.call(params, m) ? params['m'] : ($.Class.MutatorsDefaults.indexOf(m) >= 0));
+        for(m in $.Class.Mutators) $.Class.Mutators[m].call($instance, has.call(params, m) ? params[m] : ($.Class.MutatorsDefaults.indexOf(m) >= 0));
         return $instance;
     };
 
